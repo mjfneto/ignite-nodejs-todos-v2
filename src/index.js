@@ -23,7 +23,16 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+  const freeTodos = 10;
+  const restricted = user.todos.length >= freeTodos && !user.pro;
+
+  if (restricted)
+    return response.status(403).json({
+      error: `Free plan is restricted to ${freeTodos} todos.`,
+    });
+
+  next();
 }
 
 function checksTodoExists(request, response, next) {
