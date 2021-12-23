@@ -36,7 +36,24 @@ function checksCreateTodosUserAvailability(request, response, next) {
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  const isUUID = validate(request.params.id);
+
+  if (!isUUID) return response.status(400).json({ error: "Bad todo ID" });
+
+  const user = users.find(byMatchingProp("username")(request.headers)(isEqual));
+
+  if (!user)
+    return response.status(404).json({ error: "Invalid username: not found" });
+
+  const todo = user.todos.find(byMatchingProp("id")(request.params)(isEqual));
+
+  if (!todo)
+    return response.status(404).json({ error: "Invalid todo ID: not found" });
+
+  request.user = user;
+  request.todo = todo;
+
+  next();
 }
 
 function findUserById(request, response, next) {
