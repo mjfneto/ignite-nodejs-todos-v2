@@ -31,7 +31,14 @@ function checksTodoExists(request, response, next) {
 }
 
 function findUserById(request, response, next) {
-  // Complete aqui
+  const user = users.find(byMatchingProp("id")(request.params)(isEqual));
+
+  if (!user)
+    return response.status(404).json({ error: "Invalid user ID: not found" });
+
+  request.user = user;
+
+  next();
 }
 
 app.post("/users", (request, response) => {
